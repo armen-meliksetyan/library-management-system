@@ -1,0 +1,2 @@
+Linked list can serve as a list of latest books.
+bimap will serve as loans user-book pair and sync with db while starting and exiting the application
