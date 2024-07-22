@@ -1,2 +1,2 @@
 from .linked_list import LinkedList
-from .hashmap import Hashmap
+from .bi_hashmap import BiHashmap

@@ -30,25 +30,3 @@ class Book:
             )
         print(f"Database updated: {self.title} (ISBN: {self.isbn}) now has {self.quantity} copies available.")
 
-    def add_copies(self, additional_quantity):
-        if additional_quantity < 1:
-            print("Invalid quantity to add. Quantity must be at least 1.")
-            return False
-        
-        self.quantity += additional_quantity
-        self.save()
-
-    def check_out(self):
-        if self.quantity > 0:
-            self.quantity -= 1
-            self.save()
-            print(f"Book checked out successfully: {self.title}")
-            return True
-        else:
-            print(f"Book not available for checkout: {self.title}")
-            return False
-
-    def check_in(self):
-        self.quantity += 1
-        self.save()
-        print(f"Book checked in successfully: {self.title}")

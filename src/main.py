@@ -1,9 +1,9 @@
 import os
 from dotenv import load_dotenv
 from database import Database
-from models import UserFactory
-from colors import Colors
-from commands import add_book, add_copies
+# from models import UserFactory
+# from colors import Colors
+from commands import *
 
 load_dotenv()
 
@@ -55,6 +55,12 @@ def main():
                     add_book()
                 elif command == 'addCopies':
                     add_copies()
+                elif command == 'searchBooks':
+                    search_books()
+                elif command == 'removeBook':
+                    remove_book()
+                elif command == 'registerUser':
+                    register_user()
                 else:
                     print("Unknown command. Try again.")
     except KeyboardInterrupt:

@@ -38,6 +38,16 @@ class LinkedList:
             current = current.next
         current.next = None
         self.tail = current
+
+    def remove_first(self):
+        if not self.head:
+            return
+        if self.head == self.tail:
+            self.head = None
+            self.tail = None
+            return
+        self.head = self.head.next
+        self.size -= 1
     
     def print(self):
         current = self.head

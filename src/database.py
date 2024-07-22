@@ -44,7 +44,8 @@ class Database:
                 title TEXT NOT NULL,
                 author TEXT NOT NULL,
                 isbn TEXT UNIQUE NOT NULL,
-                quantity INTEGER NOT NULL DEFAULT 1
+                quantity INTEGER NOT NULL DEFAULT 1,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP           
             );
         """)
         self.execute_query("CREATE INDEX IF NOT EXISTS idx_title ON books(title);")
@@ -67,3 +68,15 @@ class Database:
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             );
         """)
+        self.execute_query("""
+            CREATE TABLE loans (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                email TEXT NOT NULL,
+                isbn TEXT NOT NULL,
+                borrowed_on DATE NOT NULL,
+                returned_on DATE,
+                FOREIGN KEY (email) REFERENCES users(email),
+                FOREIGN KEY (isbn) REFERENCES books(isbn),
+            );
+        """)
+
