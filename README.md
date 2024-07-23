@@ -106,6 +106,50 @@ This library management system is designed with a focus on robust architecture a
 
 - **Factory Pattern**: The Factory pattern is employed to create objects without specifying the exact class of the object that will be created. This is used extensively in user creation where the system needs to differentiate between different types of users (e.g., administrators and regular users) without hard-coding object creation throughout the application.
 
+## Commands
+The command structure in the `ArmLib Library Management System` provides a comprehensive and user-friendly interface for interacting with the library's functionalities. Each command corresponds to a specific operation within the system, allowing users to perform a variety of tasks related to book management, user management, and loan management. Below is an overview of each command and its purpose within the system:
+
+### Command Overview
+
+#### `addBook`
+- **Functionality**: Adds a new book to the library's inventory.
+- **How It Works**: Prompts the user to enter details about the book (title, author, and ISBN) and then adds this information to the database.
+
+#### `searchBooks`
+- **Functionality**: Allows searching for books in the library by ISBN, title, or author.
+- **How It Works**: Users specify the search criteria and query, and the system retrieves and displays matching book records from the database.
+
+#### `removeBook`
+- **Functionality**: Removes a book from the library's inventory.
+- **How It Works**: Users provide the ISBN of the book to be removed. The system checks if the book is not currently borrowed and, if so, removes it from the database.
+
+#### `registerUser`
+- **Functionality**: Registers a new user in the system.
+- **How It Works**: Collects user information (type, name, email, and optionally password for admins) and registers them in the database, allowing them access to borrow books.
+
+#### `borrowBook`
+- **Functionality**: Allows a registered user to borrow a book.
+- **How It Works**: Users enter their email and the ISBN of the book they wish to borrow. The system checks the availability of the book and, if available, marks it as borrowed.
+
+#### `returnBook`
+- **Functionality**: Manages the return process of a borrowed book.
+- **How It Works**: Users enter their email, and the system updates the book's status to available, making it ready for the next borrower.
+
+#### `searchLoan`
+- **Functionality**: Provides the ability to search for active loans by user email or book ISBN.
+- **How It Works**: Depending on the chosen method, the system will display either all books borrowed by a specific user or the user who has borrowed a specific book.
+
+#### `loanReport`
+- **Functionality**: Generates a report of all active loans.
+- **How It Works**: The system compiles and displays a list of all books currently borrowed, including borrower details and the date of borrowing.
+
+#### `exit`
+- **Functionality**: Exits the system.
+- **How It Works**: Closes the application, providing a graceful shutdown procedure.
+
+### Exception Handling
+
+- **Keyboard Interrupt (Ctrl+C)**: The system catches keyboard interrupts, ensuring that the application closes gracefully even when a user decides to exit using a keyboard shortcut like Ctrl+C.
 
 
 
