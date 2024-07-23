@@ -88,3 +88,8 @@ def search_loan():
             print(f"{Colors.Yellow}No loans found for this ISBN.{Colors.ENDC}")
     else:
         print(f"{Colors.Red}Invalid choice, please try again.{Colors.ENDC}")
+
+def generate_loan_report():
+    loans = LoanManager().generate_loan_report()
+    report = LoanManager().format_loan_report(loans)
+    print(report)

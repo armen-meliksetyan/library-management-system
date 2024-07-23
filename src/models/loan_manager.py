@@ -50,3 +50,28 @@ class LoanManager:
         self.loans.remove_by_key(email)
         self.db.execute_query("UPDATE loans SET returned_on = DATE('now') WHERE email = ? AND isbn = ?", (email, isbn))
         return True, "Book returned successfully."
+    
+    def generate_loan_report(self):
+        query = """
+        SELECT users.name, users.email, books.title, books.isbn, loans.borrowed_on
+        FROM loans
+        JOIN users ON loans.email = users.email
+        JOIN books ON loans.isbn = books.isbn
+        WHERE loans.returned_on IS NULL;
+        """
+        cursor = self.db.execute_query(query)
+        loans = cursor.fetchall()
+        return loans
+
+    def format_loan_report(self, loans):
+        if not loans:
+            return "No active loans to report."
+        
+        report = "Active Loan Report:\n"
+        report += f"{'Name':<20} {'Email':<30} {'Title':<30} {'ISBN':<15} {'Borrowed On':<10}\n"
+        report += "-" * 105 + "\n"
+        for loan in loans:
+            name, email, title, isbn, borrowed_on = loan
+            report += f"{name:<20} {email:<30} {title:<30} {isbn:<15} {borrowed_on:<10}\n"
+        
+        return report

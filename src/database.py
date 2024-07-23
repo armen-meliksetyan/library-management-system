@@ -69,7 +69,7 @@ class Database:
             );
         """)
         self.execute_query("""
-            CREATE TABLE loans (
+            CREATE TABLE IF NOT EXISTS loans (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 email TEXT NOT NULL,
                 isbn TEXT NOT NULL,
@@ -79,4 +79,6 @@ class Database:
                 FOREIGN KEY (isbn) REFERENCES books(isbn),
             );
         """)
+        
+        
 

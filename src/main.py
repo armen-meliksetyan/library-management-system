@@ -45,11 +45,12 @@ def main():
     try:
         print(f"{Colors.Blue}Welcome to ArmLib Library Management System{Colors.ENDC}")
         print(Colors.Intro)
-        if True:
+        if login():
             print(Colors.Welcome)
             while True:
                 command = input("Enter command: ")
                 if command == 'exit':
+                    print("Goodbye!")
                     break
                 elif command == 'addBook':
                     add_book()
@@ -65,12 +66,13 @@ def main():
                     return_book()
                 elif command == 'searchLoan':
                     search_loan()
-                else:
+                elif command == 'loanReport':
+                    generate_loan_report()
+                elif command:
                     print(f"{Colors.Red}Unknown command. Try again.{Colors.ENDC}")
     except KeyboardInterrupt:
-        print("\nGracefully shutting down the application...")
-    finally:
-        print("Goodbye!")
+        print("\nGoodbye!")
+        
 
 
 if __name__ == "__main__":
