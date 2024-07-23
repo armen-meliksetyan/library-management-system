@@ -3,7 +3,15 @@ from database import Database
 from .book_manager import BookManager
 
 class LoanManager:
-    def __init__(self):
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(LoanManager, cls).__new__(cls)
+            cls._instance.init_manager()
+        return cls._instance
+    
+    def init_manager(self):
         self.loans = BiHashmap()
         self.db = Database()
         self.load_loans()
@@ -16,19 +24,29 @@ class LoanManager:
             self.loans.set(email, isbn)
 
     def borrow_book(self, email, isbn):
+        user_exists = self.db.execute_query("SELECT email FROM users WHERE email = ?", (email,))
+        if not user_exists.fetchone():
+            return False, "No user found with the provided email. Please register first."
+
+        existing_loan = self.loans.get_by_key(email)
+        if existing_loan:
+            return False, f"This user already has a borrowed book: ISBN {existing_loan}. Please return it before borrowing another."
+
         if not BookManager.check_out(isbn):
-            return "This book is currently unavailable."
+            return False, "This book is currently unavailable."
+
         self.loans.set(email, isbn)
         self.db.execute_query("INSERT INTO loans (email, isbn, borrowed_on) VALUES (?, ?, DATE('now'))", (email, isbn))
-        return "Loan recorded successfully."
+        return True, "Loan recorded successfully."
+
 
     def return_book(self, email):
         isbn = self.loans.get_by_key(email)
         if not isbn:
-            return "No current loan record found for this user."
+            return False, "No current loan record found for this user."
         
         BookManager.check_in(isbn)
 
         self.loans.remove_by_key(email)
         self.db.execute_query("UPDATE loans SET returned_on = DATE('now') WHERE email = ? AND isbn = ?", (email, isbn))
-        return "Book returned successfully."
+        return True, "Book returned successfully."

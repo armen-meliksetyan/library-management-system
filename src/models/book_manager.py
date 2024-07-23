@@ -2,31 +2,12 @@ from database import Database
 
 class BookManager:
     @staticmethod
-    def add_copies(isbn, additional_quantity):
-        if additional_quantity < 1:
-            print("Invalid quantity to add. Quantity must be at least 1.")
-            return False
-
-        db = Database()
-        cursor = db.execute_query("SELECT quantity FROM books WHERE isbn = ?", (isbn,))
-        current_quantity = cursor.fetchone()[0]
-        if current_quantity:
-            new_quantity = current_quantity + additional_quantity
-            db.execute_query("UPDATE books SET quantity = ? WHERE isbn = ?", (new_quantity, isbn))
-            print(f"{additional_quantity} copies added successfully.")
-            return True
-        else:
-            return False
-
-    @staticmethod
     def check_out(isbn):
         db = Database()
-        cursor = db.execute_query("SELECT quantity FROM books WHERE isbn = ?", (isbn,))
+        cursor = db.execute_query("SELECT borrowed FROM books WHERE isbn = ?", (isbn,))
         result = cursor.fetchone()
-        if result and result[0] > 0:
-            current_quantity = result[0]
-            new_quantity = current_quantity - 1
-            db.execute_query("UPDATE books SET quantity = ? WHERE isbn = ?", (new_quantity, isbn))
+        if result and not result[0]:
+            db.execute_query("UPDATE books SET borrowed = 1 WHERE isbn = ?", (isbn,))
             print("Book checked out successfully.")
             return True
         else:
@@ -36,16 +17,16 @@ class BookManager:
     @staticmethod
     def check_in(isbn):
         db = Database()
-        cursor = db.execute_query("SELECT quantity FROM books WHERE isbn = ?", (isbn,))
+        cursor = db.execute_query("SELECT borrowed FROM books WHERE isbn = ?", (isbn,))
         result = cursor.fetchone()
-        if result:
-            current_quantity = result[0]
-            new_quantity = current_quantity + 1
-            db.execute_query("UPDATE books SET quantity = ? WHERE isbn = ?", (new_quantity, isbn))
+        if result and result[0]:
+            db.execute_query("UPDATE books SET borrowed = 0 WHERE isbn = ?", (isbn,))
             print("Book checked in successfully.")
+            return True
         else:
-            print("Book not found.")
-
+            print("Book not found or not currently borrowed.")
+            return False
+        
     @staticmethod
     def search_books(search_type, search_query):
         db = Database()
@@ -61,19 +42,25 @@ class BookManager:
 
         results = cursor.fetchall()
         if not results:
-            return "No books found."
+            return False
 
         formatted = "Found Books:\n"
         for book in results:
-            formatted += f"ISBN: {book[3]}, Title: {book[1]}, Author: {book[2]}, Quantity: {book[4]}\n"
+            formatted += f"ISBN: {book[3]}, Title: {book[1]}, Author: {book[2]}\n"
         return formatted
     
     @staticmethod
+    @staticmethod
     def remove_book(isbn):
         db = Database()
-        cursor = db.execute_query("SELECT * FROM books WHERE isbn = ?", (isbn,))
-        if not cursor.fetchone():
+        cursor = db.execute_query("SELECT borrowed FROM books WHERE isbn = ?", (isbn,))
+        book_info = cursor.fetchone()
+
+        if not book_info:
             return "Book not found. No action taken."
+
+        if book_info[0]:
+            return "Cannot remove the book because it is currently borrowed."
 
         db.execute_query("DELETE FROM books WHERE isbn = ?", (isbn,))
         return "Book successfully removed."
@@ -81,7 +68,7 @@ class BookManager:
     @staticmethod
     def get_latest_book():
         db = Database()
-        query = "SELECT id, title, author, isbn, quantity, created_at FROM books ORDER BY created_at DESC LIMIT 1"
+        query = "SELECT id, title, author, isbn, borrowed, created_at FROM books ORDER BY created_at DESC LIMIT 1"
         cursor = db.execute_query(query)
         latest_book = cursor.fetchone()
 
@@ -91,7 +78,7 @@ class BookManager:
                 'title': latest_book[1],
                 'author': latest_book[2],
                 'isbn': latest_book[3],
-                'quantity': latest_book[4],
+                'borrowed': latest_book[4],
                 'created_at': latest_book[5]
             }
         else:

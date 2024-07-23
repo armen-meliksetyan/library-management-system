@@ -53,20 +53,23 @@ def main():
                     break
                 elif command == 'addBook':
                     add_book()
-                elif command == 'addCopies':
-                    add_copies()
                 elif command == 'searchBooks':
                     search_books()
                 elif command == 'removeBook':
                     remove_book()
                 elif command == 'registerUser':
                     register_user()
+                elif command == 'borrowBook':
+                    borrow_book()
+                elif command == 'returnBook':
+                    return_book()
+                elif command == 'searchLoan':
+                    search_loan()
                 else:
-                    print("Unknown command. Try again.")
+                    print(f"{Colors.Red}Unknown command. Try again.{Colors.ENDC}")
     except KeyboardInterrupt:
         print("\nGracefully shutting down the application...")
     finally:
-        # sync with db here
         print("Goodbye!")
 
 

@@ -3,3 +3,4 @@ from .user import User
 from .admin import Admin
 from .user_factory import UserFactory
 from .book_manager import BookManager
+from .loan_manager import LoanManager
